@@ -1,5 +1,6 @@
 app/application.yml
-src/venv
-src/venv/*
+app/Lavalink.jar
+src/venv/
 /src/__pycache__
 src/.env
+sounds/
