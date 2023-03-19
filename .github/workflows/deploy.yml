@@ -57,6 +57,7 @@ jobs:
           docker stop $DOCKER_BOI_NAME && docker rm -fv $DOCKER_BOI_NAME || true
           docker run -d \
                      -v "/home/ec2-user/Lavalink_server/app/application.yml:/home/Lavalink/application.yml" \
+                     -v "/home/ec2-user/Lavalink_server/sounds/:/home/Lavalink/sounds/" \
                      -p 36969:2333 \
                      --restart unless-stopped \
                      --network="wkk-network" \
