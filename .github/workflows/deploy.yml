@@ -55,5 +55,5 @@ jobs:
           fi
           docker pull $DOCKER_BOI_IMAGE
           docker stop $DOCKER_BOI_NAME && docker rm -fv $DOCKER_BOI_NAME || true
-          docker run -d -v "/home/ec2-user/temp/Lavalink_server/app/application.yml:/home/Lavalink/application.yml" -p 2333:2333 --network="wkk-network" --name $DOCKER_BOI_NAME $DOCKER_BOI_IMAGE
+          docker run -d -v "/home/ec2-user/temp/Lavalink_server/app/application.yml:/home/Lavalink/application.yml" --network="wkk-network" --name $DOCKER_BOI_NAME $DOCKER_BOI_IMAGE
           docker image prune <<< y
