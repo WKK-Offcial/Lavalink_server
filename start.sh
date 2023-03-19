@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python src/main.py & java -jar Lavalink.jar
+python src/main.py & java -jar app/Lavalink.jar
