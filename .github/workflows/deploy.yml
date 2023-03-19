@@ -41,25 +41,28 @@ jobs:
     - name: Deploy Image on EC2
       uses: appleboy/ssh-action@v0.1.8
       env:
-        DOCKER_BOI_IMAGE: "ghcr.io/wkk-offcial/lavalink_server:latest"
-        DOCKER_BOI_NAME: "lavalink_server"
+        LAVALINK_IMAGE: "ghcr.io/wkk-offcial/lavalink_server:latest"
+        LAVALINK_CONTAINER_NAME: "lavalink_server"
+        LAVALINK_ABS_PATH_ROOT: "/home/ec2-user/Lavalink_server/"
+        LAVALINK_REL_YML_PATH: "conf/application.yml"
+        LAVALINK_REL_SOUNDSDIR_PATH: "sounds/"
       with:
         host: ${{secrets.BOI_HOSTNAME}}
         username: ec2-user
         key: ${{secrets.BOI_PRIVATE_KEY}}
-        envs: DOCKER_BOI_IMAGE, DOCKER_BOI_NAME
+        envs: LAVALINK_IMAGE, LAVALINK_CONTAINER_NAME, LAVALINK_ABS_PATH_ROOT, LAVALINK_REL_YML_PATH, LAVALINK_REL_SOUNDSDIR_PATH
         script_stop: true
         script: |
           if [[ -z "$(docker network ls | grep wkk-network)" ]]; then
             docker network create wkk-network
           fi
-          docker pull $DOCKER_BOI_IMAGE
-          docker stop $DOCKER_BOI_NAME && docker rm -fv $DOCKER_BOI_NAME || true
+          docker pull $LAVALINK_IMAGE
+          docker stop $LAVALINK_CONTAINER_NAME && docker rm -fv $LAVALINK_CONTAINER_NAME || true
           docker run -d \
-                     -v "/home/ec2-user/Lavalink_server/conf/application.yml:/home/Lavalink/application.yml" \
-                     -v "/home/ec2-user/Lavalink_server/sounds/:/home/Lavalink/sounds/" \
+                     -v "${LAVALINK_ABS_PATH_ROOT}${LAVALINK_REL_YML_PATH}:/home/Lavalink/application.yml" \
+                     -v "${LAVALINK_ABS_PATH_ROOT}${LAVALINK_REL_SOUNDSDIR_PATH}:/home/Lavalink/sounds/" \
                      -p 36969:2333 \
                      --restart unless-stopped \
                      --network="wkk-network" \
-                     --name $DOCKER_BOI_NAME $DOCKER_BOI_IMAGE
+                     --name $LAVALINK_CONTAINER_NAME $LAVALINK_IMAGE
           docker image prune <<< y
