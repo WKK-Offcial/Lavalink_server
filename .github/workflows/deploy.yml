@@ -59,8 +59,8 @@ jobs:
           docker pull $LAVALINK_IMAGE
           docker stop $LAVALINK_CONTAINER_NAME && docker rm -fv $LAVALINK_CONTAINER_NAME || true
           docker run -d \
-                     -v "${LAVALINK_ABS_PATH_ROOT}${LAVALINK_REL_YML_PATH}:/home/Lavalink/application.yml" \
-                     -v "${LAVALINK_ABS_PATH_ROOT}${LAVALINK_REL_SOUNDSDIR_PATH}:/home/Lavalink/sounds/" \
+                     -v "${LAVALINK_ABS_PATH_ROOT}${LAVALINK_REL_YML_PATH}:/home/Lavalink_server/app/application.yml" \
+                     -v "${LAVALINK_ABS_PATH_ROOT}${LAVALINK_REL_SOUNDSDIR_PATH}:/home/Lavalink_server/sounds/" \
                      -p 36969:2333 \
                      --restart unless-stopped \
                      --network="wkk-network" \
