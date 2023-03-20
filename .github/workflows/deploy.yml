@@ -45,22 +45,24 @@ jobs:
         LAVALINK_CONTAINER_NAME: "lavalink_server"
         LAVALINK_ABS_PATH_ROOT: "/home/ec2-user/Lavalink_server/"
         LAVALINK_REL_YML_PATH: "conf/application.yml"
-        LAVALINK_REL_SOUNDSDIR_PATH: "sounds/"
       with:
         host: ${{secrets.BOI_HOSTNAME}}
         username: ec2-user
         key: ${{secrets.BOI_PRIVATE_KEY}}
-        envs: LAVALINK_IMAGE, LAVALINK_CONTAINER_NAME, LAVALINK_ABS_PATH_ROOT, LAVALINK_REL_YML_PATH, LAVALINK_REL_SOUNDSDIR_PATH
+        envs: LAVALINK_IMAGE, LAVALINK_CONTAINER_NAME, LAVALINK_ABS_PATH_ROOT, LAVALINK_REL_YML_PATH
         script_stop: true
         script: |
           if [[ -z "$(docker network ls | grep wkk-network)" ]]; then
             docker network create wkk-network
           fi
+          if [[ -z "$(docker volume ls | grep sounds)" ]]; then
+            docker volume create sounds
+          fi
           docker pull $LAVALINK_IMAGE
           docker stop $LAVALINK_CONTAINER_NAME && docker rm -fv $LAVALINK_CONTAINER_NAME || true
           docker run -d \
                      -v "${LAVALINK_ABS_PATH_ROOT}${LAVALINK_REL_YML_PATH}:/home/Lavalink/application.yml" \
-                     -v "${LAVALINK_ABS_PATH_ROOT}${LAVALINK_REL_SOUNDSDIR_PATH}:/home/Lavalink/sounds/" \
+                     -v sounds:/home/Lavalink/sounds/" \
                      -p 36969:2333 \
                      --restart unless-stopped \
                      --network="wkk-network" \
