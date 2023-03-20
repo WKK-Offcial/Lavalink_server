@@ -62,7 +62,7 @@ jobs:
           docker stop $LAVALINK_CONTAINER_NAME && docker rm -fv $LAVALINK_CONTAINER_NAME || true
           docker run -d \
                      -v "${LAVALINK_ABS_PATH_ROOT}${LAVALINK_REL_YML_PATH}:/home/Lavalink/application.yml" \
-                     -v sounds:/home/Lavalink/sounds/" \
+                     -v "sounds:/home/Lavalink/sounds/" \
                      -p 36969:2333 \
                      --restart unless-stopped \
                      --network="wkk-network" \
