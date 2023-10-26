@@ -44,7 +44,7 @@ jobs:
       env:
         LAVALINK_IMAGE: "ghcr.io/wkk-offcial/lavalink_server:latest"
         LAVALINK_CONTAINER_NAME: "lavalink_server"
-        LAVALINK_ABS_PATH_ROOT: "/home/ec2-user/Lavalink_server/"
+        LAVALINK_ABS_PATH_ROOT: "/home/opc/Lavalink_server/"
         LAVALINK_REL_YML_PATH: "conf/application.yml"
       with:
         host: ${{secrets.BOI_HOSTNAME}}
