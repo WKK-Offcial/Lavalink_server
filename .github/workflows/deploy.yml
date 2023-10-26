@@ -48,7 +48,7 @@ jobs:
         LAVALINK_REL_YML_PATH: "conf/application.yml"
       with:
         host: ${{secrets.BOI_HOSTNAME}}
-        username: ec2-user
+        username: opc
         key: ${{secrets.BOI_PRIVATE_KEY}}
         envs: LAVALINK_IMAGE, LAVALINK_CONTAINER_NAME, LAVALINK_ABS_PATH_ROOT, LAVALINK_REL_YML_PATH
         script_stop: true
