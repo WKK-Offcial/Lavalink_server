@@ -32,40 +32,20 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: ghcr.io/wkk-offcial/lavalink_server:latest
+          tags: ghcr.io/wkk-offcial/lavalink_server:latest,ghcr.io/wkk-offcial/lavalink_server:${{ github.sha }}
+     
+    trigger_deploy:
+      name: Trigger deployment pipeline
+      runs-on: ubuntu-latest
+      needs: docker_build
+      steps:
+        - name: Trigger deployment pipeline
+          run: |
+            curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.DEPLOY_API_TOKEN }}" \:
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/WKK-Offcial/bot_deployment/actions/workflows/deploy.yml/dispatches \
+            -d '{"ref":"master"}'
 
-  deploy:
-    name: Deploy to EC2
-    needs: docker_build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Deploy Image on EC2
-      uses: appleboy/ssh-action@v0.1.8
-      env:
-        LAVALINK_IMAGE: "ghcr.io/wkk-offcial/lavalink_server:latest"
-        LAVALINK_CONTAINER_NAME: "lavalink_server"
-        LAVALINK_ABS_PATH_ROOT: "/home/opc/Lavalink_server/"
-        LAVALINK_REL_YML_PATH: "conf/application.yml"
-      with:
-        host: ${{secrets.BOI_HOSTNAME}}
-        username: opc
-        key: ${{secrets.BOI_PRIVATE_KEY}}
-        envs: LAVALINK_IMAGE, LAVALINK_CONTAINER_NAME, LAVALINK_ABS_PATH_ROOT, LAVALINK_REL_YML_PATH
-        script_stop: true
-        script: |
-          if [[ -z "$(docker network ls | grep wkk-network)" ]]; then
-            docker network create wkk-network
-          fi
-          if [[ -z "$(docker volume ls | grep sounds)" ]]; then
-            docker volume create sounds
-          fi
-          docker pull $LAVALINK_IMAGE
-          docker stop $LAVALINK_CONTAINER_NAME && docker rm -fv $LAVALINK_CONTAINER_NAME || true
-          docker run -d \
-                     -v "${LAVALINK_ABS_PATH_ROOT}${LAVALINK_REL_YML_PATH}:/home/Lavalink/application.yml" \
-                     -v "sounds:/home/Lavalink/sounds/" \
-                     -p 36969:2333 \
-                     --restart unless-stopped \
-                     --network="wkk-network" \
-                     --name $LAVALINK_CONTAINER_NAME $LAVALINK_IMAGE
-          docker image prune <<< y
